@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="An interactive Thanksgiving celebration - Harvest of Gratitude">
+    <meta name="theme-color" content="#8B4513">
+    <title>🍂 Harvest of Gratitude - Happy Thanksgiving</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Particle Canvas Layers -->
+    <canvas id="bg-canvas" aria-hidden="true"></canvas>
+    <canvas id="leaf-canvas" aria-hidden="true"></canvas>
+    <canvas id="ember-canvas" aria-hidden="true"></canvas>
+
+    <!-- Parallax Background Layers -->
+    <div class="parallax-container" aria-hidden="true">
+        <div class="parallax-layer parallax-back"></div>
+        <div class="parallax-layer parallax-mid"></div>
+        <div class="parallax-layer parallax-front"></div>
+    </div>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section class="hero" id="hero">
+            <div class="hero-content">
+                <div class="title-container">
+                    <h1 class="main-title">
+                        <span class="title-word" data-delay="0">Harvest</span>
+                        <span class="title-word" data-delay="1">of</span>
+                        <span class="title-word" data-delay="2">Gratitude</span>
+                    </h1>
+                    <p class="subtitle">A Thanksgiving Celebration</p>
+                </div>
+                <div class="scroll-indicator" aria-label="Scroll down">
+                    <div class="scroll-arrow"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gratitude Tree Section -->
+        <section class="tree-section" id="gratitude-tree">
+            <div class="section-header">
+                <h2 class="section-title reveal-text">Plant Your Gratitude</h2>
+                <p class="section-subtitle reveal-text">Click the tree to add a leaf of thankfulness</p>
+            </div>
+            <div class="tree-container">
+                <canvas id="tree-canvas" aria-label="Interactive gratitude tree"></canvas>
+                <div class="tree-instructions">
+                    <span class="instruction-icon">✨</span>
+                    <span>Click anywhere on the tree</span>
+                </div>
+            </div>
+            <div class="gratitude-input-container" id="gratitude-input" style="display: none;">
+                <div class="input-card">
+                    <label for="gratitude-text">What are you grateful for?</label>
+                    <input type="text" id="gratitude-text" maxlength="50" placeholder="Family, friends, health...">
+                    <div class="input-actions">
+                        <button id="add-leaf-btn" class="btn btn-primary">Add Leaf</button>
+                        <button id="cancel-btn" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feast Section -->
+        <section class="feast-section" id="feast">
+            <div class="section-header">
+                <h2 class="section-title reveal-text">The Thanksgiving Feast</h2>
+                <p class="section-subtitle reveal-text">Hover to explore the traditional spread</p>
+            </div>
+            <div class="feast-table">
+                <div class="feast-item" data-item="turkey">
+                    <div class="feast-icon">🦃</div>
+                    <div class="feast-glow"></div>
+                    <span class="feast-label">Roasted Turkey</span>
+                </div>
+                <div class="feast-item" data-item="pie">
+                    <div class="feast-icon">🥧</div>
+                    <div class="feast-glow"></div>
+                    <span class="feast-label">Pumpkin Pie</span>
+                </div>
+                <div class="feast-item" data-item="corn">
+                    <div class="feast-icon">🌽</div>
+                    <div class="feast-glow"></div>
+                    <span class="feast-label">Sweet Corn</span>
+                </div>
+                <div class="feast-item" data-item="bread">
+                    <div class="feast-icon">🍞</div>
+                    <div class="feast-glow"></div>
+                    <span class="feast-label">Fresh Bread</span>
+                </div>
+                <div class="feast-item" data-item="wine">
+                    <div class="feast-icon">🍷</div>
+                    <div class="feast-glow"></div>
+                    <span class="feast-label">Cranberry Wine</span>
+                </div>
+                <div class="feast-item" data-item="apple">
+                    <div class="feast-icon">🍎</div>
+                    <div class="feast-glow"></div>
+                    <span class="feast-label">Autumn Apples</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quote Section -->
+        <section class="quote-section" id="quote">
+            <div class="quote-container">
+                <blockquote class="main-quote reveal-text">
+                    <span class="quote-mark">"</span>
+                    <p>Gratitude turns what we have into enough, and more. It turns denial into acceptance, chaos into order, confusion into clarity.</p>
+                    <footer>— Melody Beattie</footer>
+                </blockquote>
+            </div>
+            <div class="floating-elements" aria-hidden="true">
+                <span class="float-leaf">🍂</span>
+                <span class="float-leaf">🍁</span>
+                <span class="float-leaf">🍂</span>
+                <span class="float-leaf">🍁</span>
+            </div>
+        </section>
+
+        <!-- Message Section -->
+        <section class="message-section" id="message">
+            <div class="message-container">
+                <div class="message-card reveal-scale">
+                    <div class="card-decoration top-left"></div>
+                    <div class="card-decoration top-right"></div>
+                    <div class="card-decoration bottom-left"></div>
+                    <div class="card-decoration bottom-right"></div>
+                    <h2>Happy Thanksgiving</h2>
+                    <p>May your day be filled with warmth, love, and the company of those who matter most. Take a moment to reflect on the abundance in your life and share your gratitude with the world.</p>
+                    <div class="signature">
+                        <span class="year">2024</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="site-footer">
+            <div class="footer-content">
+                <p>Created with <span class="heart">♥</span> and gratitude</p>
+                <p class="tech-note">Built with vanilla HTML, CSS & JavaScript</p>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Gratitude Leaves Display -->
+    <div id="gratitude-leaves" class="gratitude-leaves" aria-live="polite"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
