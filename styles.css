@@ -120,7 +120,9 @@ body {
 /* ============================================
    CANVAS LAYERS
    ============================================ */
-canvas {
+#stars-canvas,
+#fireworks-canvas,
+#particles-canvas {
     position: fixed;
     top: 0;
     left: 0;
@@ -134,7 +136,7 @@ canvas {
 }
 
 #fireworks-canvas {
-    z-index: 3;
+    z-index: 15;
 }
 
 #particles-canvas {
@@ -878,6 +880,7 @@ canvas {
     height: 100%;
     cursor: crosshair;
     pointer-events: auto;
+    z-index: 1;
 }
 
 .wish-counter {
@@ -1351,25 +1354,36 @@ blockquote {
    REVEAL ANIMATIONS
    ============================================ */
 .reveal-text {
-    opacity: 0;
-    transform: translateY(30px);
+    opacity: 1;
+    transform: translateY(0);
     transition: all 0.8s var(--ease-out-expo);
 }
 
-.reveal-text.revealed {
-    opacity: 1;
-    transform: translateY(0);
+.reveal-text.unrevealed {
+    opacity: 0;
+    transform: translateY(30px);
 }
 
 .reveal-scale {
-    opacity: 0;
-    transform: scale(0.9);
+    opacity: 1;
+    transform: scale(1);
     transition: all 0.8s var(--ease-bounce);
 }
 
-.reveal-scale.revealed {
-    opacity: 1;
-    transform: scale(1);
+.reveal-scale.unrevealed {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+/* JS-enhanced reveal - only hide when JS is available */
+.js-loaded .reveal-text:not(.revealed) {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.js-loaded .reveal-scale:not(.revealed) {
+    opacity: 0;
+    transform: scale(0.9);
 }
 
 /* ============================================
