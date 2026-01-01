@@ -1,40 +1,48 @@
 /**
- * HARVEST OF GRATITUDE - Interactive Thanksgiving Experience
- * State-of-the-Art JavaScript Implementation
+ * HAPPY NEW YEAR 2026
+ * Grenada Tropical Vibes × NYC Urban Energy
+ * Advanced Interactive JavaScript Experience
  *
  * Features:
- * - Physics-based leaf particle system with wind simulation
- * - Ember/firefly ambient particles
- * - Interactive procedural gratitude tree
- * - Dynamic time-based theming
- * - Scroll-triggered animations
- * - Generative background patterns
+ * - Starfield with twinkling animation
+ * - Physics-based fireworks system
+ * - Tropical particle effects (hibiscus, sparkles)
+ * - Interactive wish system with shooting stars
+ * - Ball drop animation with celebration trigger
+ * - Scroll-triggered reveal animations
+ * - Dynamic audio visualizer simulation
  */
 
 // ============================================
 // CONFIGURATION
 // ============================================
 const CONFIG = {
-    leaves: {
-        count: 50,
-        colors: ['#c4703c', '#d4a574', '#a0522d', '#c0392b', '#e8c547', '#8B4513'],
-        minSize: 15,
-        maxSize: 35,
-        windStrength: 0.5,
-        gravity: 0.3,
-        turbulence: 0.02
+    stars: {
+        count: 200,
+        colors: ['#ffffff', '#ffd700', '#00d4aa', '#ff6b9d', '#8338ec'],
+        minSize: 1,
+        maxSize: 3,
+        twinkleSpeed: 0.02
     },
-    embers: {
-        count: 30,
-        color: 'rgba(232, 197, 71, ',
-        minSize: 2,
-        maxSize: 5
+    fireworks: {
+        particleCount: 80,
+        colors: [
+            '#ff006e', '#00d4aa', '#ffd700', '#8338ec',
+            '#ff6b9d', '#3a86ff', '#ffbe0b', '#00b4d8'
+        ],
+        gravity: 0.08,
+        friction: 0.98,
+        fadeSpeed: 0.015
     },
-    tree: {
-        trunkColor: '#5D4037',
-        leafColors: ['#c4703c', '#d4a574', '#a0522d', '#c0392b', '#e8c547', '#8B4513', '#CD853F'],
-        branchAngle: Math.PI / 6,
-        branchLength: 0.7
+    particles: {
+        count: 25,
+        types: ['sparkle', 'hibiscus', 'confetti'],
+        colors: ['#00d4aa', '#ff6b9d', '#ffd700', '#8338ec', '#ff006e']
+    },
+    wishes: {
+        starTrailLength: 20,
+        starSpeed: 8,
+        glowIntensity: 30
     }
 };
 
@@ -43,243 +51,400 @@ const CONFIG = {
 // ============================================
 const random = (min, max) => Math.random() * (max - min) + min;
 const randomInt = (min, max) => Math.floor(random(min, max));
+const randomChoice = (arr) => arr[randomInt(0, arr.length)];
 const lerp = (start, end, t) => start + (end - start) * t;
-const clamp = (val, min, max) => Math.max(min, Math.min(max, val));
+const distance = (x1, y1, x2, y2) => Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
 
 // ============================================
-// TIME-BASED THEMING
+// STARFIELD SYSTEM
 // ============================================
-class TimeTheme {
-    constructor() {
-        this.update();
-        setInterval(() => this.update(), 60000); // Update every minute
-    }
-
-    update() {
-        const hour = new Date().getHours();
-        let hueShift = 0;
-        let ambientOpacity = 0.1;
-
-        if (hour >= 5 && hour < 8) {
-            // Dawn - golden pink
-            hueShift = -10;
-            ambientOpacity = 0.15;
-        } else if (hour >= 8 && hour < 17) {
-            // Day - warm yellow
-            hueShift = 0;
-            ambientOpacity = 0.1;
-        } else if (hour >= 17 && hour < 20) {
-            // Sunset - deep orange
-            hueShift = 15;
-            ambientOpacity = 0.2;
-        } else {
-            // Night - deep warm
-            hueShift = 25;
-            ambientOpacity = 0.05;
-        }
-
-        document.documentElement.style.setProperty('--time-hue-shift', `${hueShift}deg`);
-        document.documentElement.style.setProperty('--ambient-glow', `rgba(232, 197, 71, ${ambientOpacity})`);
-    }
-}
-
-// ============================================
-// LEAF PARTICLE SYSTEM
-// ============================================
-class Leaf {
-    constructor(canvas, ctx) {
+class Star {
+    constructor(canvas) {
         this.canvas = canvas;
-        this.ctx = ctx;
-        this.reset();
-    }
-
-    reset() {
-        this.x = random(-50, this.canvas.width + 50);
-        this.y = random(-100, -50);
-        this.size = random(CONFIG.leaves.minSize, CONFIG.leaves.maxSize);
-        this.color = CONFIG.leaves.colors[randomInt(0, CONFIG.leaves.colors.length)];
-        this.rotation = random(0, Math.PI * 2);
-        this.rotationSpeed = random(-0.05, 0.05);
-        this.vx = random(-1, 1);
-        this.vy = random(1, 3);
-        this.windPhase = random(0, Math.PI * 2);
-        this.windFrequency = random(0.01, 0.03);
-        this.opacity = random(0.6, 1);
-        this.depth = random(0.5, 1); // Parallax depth
-    }
-
-    update(time, wind) {
-        // Wind effect with turbulence
-        const windEffect = Math.sin(time * this.windFrequency + this.windPhase) * CONFIG.leaves.windStrength;
-        const turbulence = Math.sin(time * CONFIG.leaves.turbulence * this.windPhase) * 0.5;
-
-        this.x += (this.vx + windEffect + wind + turbulence) * this.depth;
-        this.y += (this.vy + CONFIG.leaves.gravity) * this.depth;
-        this.rotation += this.rotationSpeed;
-
-        // Reset when off screen
-        if (this.y > this.canvas.height + 50 || this.x < -100 || this.x > this.canvas.width + 100) {
-            this.reset();
-        }
-    }
-
-    draw() {
-        this.ctx.save();
-        this.ctx.translate(this.x, this.y);
-        this.ctx.rotate(this.rotation);
-        this.ctx.globalAlpha = this.opacity * this.depth;
-
-        // Draw leaf shape
-        this.ctx.beginPath();
-        this.ctx.moveTo(0, -this.size / 2);
-        this.ctx.bezierCurveTo(
-            this.size / 2, -this.size / 4,
-            this.size / 2, this.size / 4,
-            0, this.size / 2
-        );
-        this.ctx.bezierCurveTo(
-            -this.size / 2, this.size / 4,
-            -this.size / 2, -this.size / 4,
-            0, -this.size / 2
-        );
-
-        this.ctx.fillStyle = this.color;
-        this.ctx.fill();
-
-        // Leaf vein
-        this.ctx.beginPath();
-        this.ctx.moveTo(0, -this.size / 2);
-        this.ctx.lineTo(0, this.size / 2);
-        this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
-        this.ctx.lineWidth = 1;
-        this.ctx.stroke();
-
-        this.ctx.restore();
-    }
-}
-
-class LeafSystem {
-    constructor(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        this.ctx = this.canvas.getContext('2d');
-        this.leaves = [];
-        this.wind = 0;
-        this.targetWind = 0;
-        this.time = 0;
-
-        this.resize();
-        window.addEventListener('resize', () => this.resize());
-
-        // Initialize leaves
-        for (let i = 0; i < CONFIG.leaves.count; i++) {
-            const leaf = new Leaf(this.canvas, this.ctx);
-            leaf.y = random(-this.canvas.height, this.canvas.height); // Distribute initially
-            this.leaves.push(leaf);
-        }
-
-        // Random wind gusts
-        setInterval(() => {
-            this.targetWind = random(-2, 2);
-        }, 3000);
-    }
-
-    resize() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-    }
-
-    update() {
-        this.time++;
-        this.wind = lerp(this.wind, this.targetWind, 0.01);
-
-        for (const leaf of this.leaves) {
-            leaf.update(this.time, this.wind);
-        }
-    }
-
-    draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        // Sort by depth for proper layering
-        this.leaves.sort((a, b) => a.depth - b.depth);
-
-        for (const leaf of this.leaves) {
-            leaf.draw();
-        }
-    }
-}
-
-// ============================================
-// EMBER PARTICLE SYSTEM
-// ============================================
-class Ember {
-    constructor(canvas, ctx) {
-        this.canvas = canvas;
-        this.ctx = ctx;
         this.reset();
     }
 
     reset() {
         this.x = random(0, this.canvas.width);
-        this.y = random(this.canvas.height * 0.5, this.canvas.height);
-        this.size = random(CONFIG.embers.minSize, CONFIG.embers.maxSize);
-        this.vx = random(-0.3, 0.3);
-        this.vy = random(-0.5, -1.5);
-        this.opacity = random(0.3, 0.8);
-        this.flickerSpeed = random(0.05, 0.1);
-        this.flickerPhase = random(0, Math.PI * 2);
-        this.life = 1;
-        this.decay = random(0.002, 0.005);
+        this.y = random(0, this.canvas.height * 0.7); // Keep stars in upper portion
+        this.size = random(CONFIG.stars.minSize, CONFIG.stars.maxSize);
+        this.color = randomChoice(CONFIG.stars.colors);
+        this.twinklePhase = random(0, Math.PI * 2);
+        this.twinkleSpeed = random(0.01, 0.05);
+        this.baseOpacity = random(0.3, 1);
     }
 
     update(time) {
-        this.x += this.vx + Math.sin(time * 0.01 + this.flickerPhase) * 0.3;
-        this.y += this.vy;
-        this.life -= this.decay;
-
-        if (this.life <= 0 || this.y < 0) {
-            this.reset();
-        }
+        this.twinklePhase += this.twinkleSpeed;
+        this.opacity = this.baseOpacity * (0.5 + 0.5 * Math.sin(this.twinklePhase));
     }
 
-    draw(time) {
-        const flicker = Math.sin(time * this.flickerSpeed + this.flickerPhase) * 0.3 + 0.7;
-        const currentOpacity = this.opacity * this.life * flicker;
+    draw(ctx) {
+        ctx.save();
+        ctx.globalAlpha = this.opacity;
 
         // Glow effect
-        const gradient = this.ctx.createRadialGradient(
+        const gradient = ctx.createRadialGradient(
             this.x, this.y, 0,
             this.x, this.y, this.size * 3
         );
-        gradient.addColorStop(0, `${CONFIG.embers.color}${currentOpacity})`);
-        gradient.addColorStop(0.5, `${CONFIG.embers.color}${currentOpacity * 0.5})`);
-        gradient.addColorStop(1, `${CONFIG.embers.color}0)`);
+        gradient.addColorStop(0, this.color);
+        gradient.addColorStop(0.5, this.color + '40');
+        gradient.addColorStop(1, 'transparent');
 
-        this.ctx.beginPath();
-        this.ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
-        this.ctx.fillStyle = gradient;
-        this.ctx.fill();
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+        ctx.fill();
 
         // Core
-        this.ctx.beginPath();
-        this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        this.ctx.fillStyle = `rgba(255, 255, 200, ${currentOpacity})`;
-        this.ctx.fill();
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
     }
 }
 
-class EmberSystem {
+class StarfieldSystem {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
+        if (!this.canvas) return;
         this.ctx = this.canvas.getContext('2d');
-        this.embers = [];
+        this.stars = [];
         this.time = 0;
 
         this.resize();
         window.addEventListener('resize', () => this.resize());
 
-        for (let i = 0; i < CONFIG.embers.count; i++) {
-            this.embers.push(new Ember(this.canvas, this.ctx));
+        for (let i = 0; i < CONFIG.stars.count; i++) {
+            this.stars.push(new Star(this.canvas));
+        }
+    }
+
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+
+        // Redistribute stars on resize
+        this.stars.forEach(star => star.reset());
+    }
+
+    update() {
+        this.time++;
+        this.stars.forEach(star => star.update(this.time));
+    }
+
+    draw() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.stars.forEach(star => star.draw(this.ctx));
+    }
+}
+
+// ============================================
+// FIREWORKS SYSTEM
+// ============================================
+class FireworkParticle {
+    constructor(x, y, color, velocity, size) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.vx = velocity.x;
+        this.vy = velocity.y;
+        this.size = size;
+        this.opacity = 1;
+        this.trail = [];
+        this.trailLength = 5;
+    }
+
+    update() {
+        // Store trail
+        this.trail.push({ x: this.x, y: this.y, opacity: this.opacity });
+        if (this.trail.length > this.trailLength) {
+            this.trail.shift();
+        }
+
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += CONFIG.fireworks.gravity;
+        this.vx *= CONFIG.fireworks.friction;
+        this.vy *= CONFIG.fireworks.friction;
+        this.opacity -= CONFIG.fireworks.fadeSpeed;
+        this.size *= 0.98;
+    }
+
+    draw(ctx) {
+        // Draw trail
+        this.trail.forEach((point, i) => {
+            const trailOpacity = (i / this.trail.length) * point.opacity * 0.5;
+            ctx.save();
+            ctx.globalAlpha = trailOpacity;
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(point.x, point.y, this.size * 0.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        });
+
+        // Draw particle
+        ctx.save();
+        ctx.globalAlpha = this.opacity;
+
+        // Glow
+        const gradient = ctx.createRadialGradient(
+            this.x, this.y, 0,
+            this.x, this.y, this.size * 2
+        );
+        gradient.addColorStop(0, this.color);
+        gradient.addColorStop(1, 'transparent');
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Core
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 0.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+    isDead() {
+        return this.opacity <= 0;
+    }
+}
+
+class Firework {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.particles = [];
+        this.color = randomChoice(CONFIG.fireworks.colors);
+        this.explode();
+    }
+
+    explode() {
+        const particleCount = CONFIG.fireworks.particleCount;
+        const angleStep = (Math.PI * 2) / particleCount;
+
+        for (let i = 0; i < particleCount; i++) {
+            const angle = angleStep * i + random(-0.2, 0.2);
+            const speed = random(2, 8);
+            const velocity = {
+                x: Math.cos(angle) * speed,
+                y: Math.sin(angle) * speed
+            };
+            const size = random(2, 4);
+
+            this.particles.push(new FireworkParticle(
+                this.x, this.y, this.color, velocity, size
+            ));
+        }
+
+        // Add some extra random particles for variety
+        for (let i = 0; i < 20; i++) {
+            const angle = random(0, Math.PI * 2);
+            const speed = random(1, 4);
+            const velocity = {
+                x: Math.cos(angle) * speed,
+                y: Math.sin(angle) * speed
+            };
+            const color = randomChoice(CONFIG.fireworks.colors);
+
+            this.particles.push(new FireworkParticle(
+                this.x, this.y, color, velocity, random(1, 3)
+            ));
+        }
+    }
+
+    update() {
+        this.particles.forEach(p => p.update());
+        this.particles = this.particles.filter(p => !p.isDead());
+    }
+
+    draw(ctx) {
+        this.particles.forEach(p => p.draw(ctx));
+    }
+
+    isDead() {
+        return this.particles.length === 0;
+    }
+}
+
+class FireworksSystem {
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        if (!this.canvas) return;
+        this.ctx = this.canvas.getContext('2d');
+        this.fireworks = [];
+        this.autoLaunch = false;
+
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+    }
+
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+
+    launch(x, y) {
+        this.fireworks.push(new Firework(x, y));
+    }
+
+    launchRandom() {
+        const x = random(this.canvas.width * 0.2, this.canvas.width * 0.8);
+        const y = random(this.canvas.height * 0.1, this.canvas.height * 0.5);
+        this.launch(x, y);
+    }
+
+    startAutoLaunch() {
+        this.autoLaunch = true;
+        this.autoLaunchInterval = setInterval(() => {
+            if (this.autoLaunch && Math.random() > 0.5) {
+                this.launchRandom();
+            }
+        }, 800);
+
+        // Stop after 10 seconds
+        setTimeout(() => this.stopAutoLaunch(), 10000);
+    }
+
+    stopAutoLaunch() {
+        this.autoLaunch = false;
+        if (this.autoLaunchInterval) {
+            clearInterval(this.autoLaunchInterval);
+        }
+    }
+
+    update() {
+        this.fireworks.forEach(f => f.update());
+        this.fireworks = this.fireworks.filter(f => !f.isDead());
+    }
+
+    draw() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.fireworks.forEach(f => f.draw(this.ctx));
+    }
+}
+
+// ============================================
+// AMBIENT PARTICLE SYSTEM
+// ============================================
+class AmbientParticle {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.reset();
+    }
+
+    reset() {
+        this.x = random(0, this.canvas.width);
+        this.y = random(this.canvas.height, this.canvas.height + 100);
+        this.size = random(3, 8);
+        this.color = randomChoice(CONFIG.particles.colors);
+        this.type = randomChoice(CONFIG.particles.types);
+        this.vx = random(-0.5, 0.5);
+        this.vy = random(-1, -2);
+        this.rotation = random(0, Math.PI * 2);
+        this.rotationSpeed = random(-0.05, 0.05);
+        this.opacity = random(0.3, 0.8);
+        this.wobblePhase = random(0, Math.PI * 2);
+        this.wobbleSpeed = random(0.02, 0.05);
+    }
+
+    update(time) {
+        this.wobblePhase += this.wobbleSpeed;
+        this.x += this.vx + Math.sin(this.wobblePhase) * 0.5;
+        this.y += this.vy;
+        this.rotation += this.rotationSpeed;
+
+        if (this.y < -50) {
+            this.reset();
+        }
+    }
+
+    draw(ctx) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        ctx.globalAlpha = this.opacity;
+
+        if (this.type === 'sparkle') {
+            this.drawSparkle(ctx);
+        } else if (this.type === 'hibiscus') {
+            this.drawHibiscus(ctx);
+        } else {
+            this.drawConfetti(ctx);
+        }
+
+        ctx.restore();
+    }
+
+    drawSparkle(ctx) {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        for (let i = 0; i < 4; i++) {
+            const angle = (i * Math.PI) / 2;
+            ctx.lineTo(
+                Math.cos(angle) * this.size,
+                Math.sin(angle) * this.size
+            );
+            ctx.lineTo(
+                Math.cos(angle + Math.PI / 4) * (this.size * 0.4),
+                Math.sin(angle + Math.PI / 4) * (this.size * 0.4)
+            );
+        }
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    drawHibiscus(ctx) {
+        ctx.fillStyle = this.color;
+        for (let i = 0; i < 5; i++) {
+            ctx.beginPath();
+            const angle = (i * Math.PI * 2) / 5;
+            ctx.ellipse(
+                Math.cos(angle) * this.size * 0.5,
+                Math.sin(angle) * this.size * 0.5,
+                this.size * 0.6,
+                this.size * 0.3,
+                angle,
+                0, Math.PI * 2
+            );
+            ctx.fill();
+        }
+        // Center
+        ctx.fillStyle = '#ffd700';
+        ctx.beginPath();
+        ctx.arc(0, 0, this.size * 0.2, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    drawConfetti(ctx) {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(-this.size / 2, -this.size / 4, this.size, this.size / 2);
+    }
+}
+
+class AmbientParticleSystem {
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        if (!this.canvas) return;
+        this.ctx = this.canvas.getContext('2d');
+        this.particles = [];
+        this.time = 0;
+
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+
+        for (let i = 0; i < CONFIG.particles.count; i++) {
+            const particle = new AmbientParticle(this.canvas);
+            particle.y = random(0, this.canvas.height);
+            this.particles.push(particle);
         }
     }
 
@@ -290,123 +455,126 @@ class EmberSystem {
 
     update() {
         this.time++;
-        for (const ember of this.embers) {
-            ember.update(this.time);
-        }
+        this.particles.forEach(p => p.update(this.time));
     }
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        for (const ember of this.embers) {
-            ember.draw(this.time);
-        }
+        this.particles.forEach(p => p.draw(this.ctx));
     }
 }
 
 // ============================================
-// GENERATIVE BACKGROUND
+// SHOOTING STAR WISH SYSTEM
 // ============================================
-class GenerativeBackground {
-    constructor(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        this.ctx = this.canvas.getContext('2d');
-        this.time = 0;
-
-        this.resize();
-        window.addEventListener('resize', () => {
-            this.resize();
-            this.draw();
-        });
-
-        this.draw();
+class ShootingStar {
+    constructor(canvas, startX, startY, text) {
+        this.canvas = canvas;
+        this.x = startX;
+        this.y = startY;
+        this.text = text;
+        this.angle = random(-Math.PI / 4, -Math.PI / 6);
+        this.speed = CONFIG.wishes.starSpeed;
+        this.vx = Math.cos(this.angle) * this.speed;
+        this.vy = Math.sin(this.angle) * this.speed;
+        this.trail = [];
+        this.trailLength = CONFIG.wishes.starTrailLength;
+        this.opacity = 1;
+        this.size = random(3, 5);
+        this.color = randomChoice(['#ffd700', '#00d4aa', '#ff6b9d', '#ffffff']);
     }
 
-    resize() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-    }
-
-    draw() {
-        const { width, height } = this.canvas;
-
-        // Deep gradient background
-        const gradient = this.ctx.createRadialGradient(
-            width / 2, height / 2, 0,
-            width / 2, height / 2, Math.max(width, height)
-        );
-        gradient.addColorStop(0, '#2d1810');
-        gradient.addColorStop(0.5, '#1a0f0a');
-        gradient.addColorStop(1, '#0d0705');
-
-        this.ctx.fillStyle = gradient;
-        this.ctx.fillRect(0, 0, width, height);
-
-        // Add noise texture
-        this.addNoiseTexture();
-
-        // Add subtle patterns
-        this.drawPatterns();
-    }
-
-    addNoiseTexture() {
-        const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-        const data = imageData.data;
-
-        for (let i = 0; i < data.length; i += 4) {
-            const noise = (Math.random() - 0.5) * 15;
-            data[i] += noise;
-            data[i + 1] += noise;
-            data[i + 2] += noise;
+    update() {
+        this.trail.push({ x: this.x, y: this.y, opacity: this.opacity });
+        if (this.trail.length > this.trailLength) {
+            this.trail.shift();
         }
 
-        this.ctx.putImageData(imageData, 0, 0);
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Fade as it moves
+        if (this.x > this.canvas.width * 0.7 || this.y < this.canvas.height * 0.1) {
+            this.opacity -= 0.02;
+        }
     }
 
-    drawPatterns() {
-        const { width, height } = this.canvas;
+    draw(ctx) {
+        // Draw trail
+        this.trail.forEach((point, i) => {
+            const trailOpacity = (i / this.trail.length) * point.opacity;
+            const trailSize = (i / this.trail.length) * this.size;
 
-        // Draw subtle radial light spots
-        for (let i = 0; i < 5; i++) {
-            const x = random(0, width);
-            const y = random(0, height);
-            const radius = random(100, 400);
+            ctx.save();
+            ctx.globalAlpha = trailOpacity;
 
-            const gradient = this.ctx.createRadialGradient(x, y, 0, x, y, radius);
-            gradient.addColorStop(0, 'rgba(196, 112, 60, 0.03)');
+            const gradient = ctx.createRadialGradient(
+                point.x, point.y, 0,
+                point.x, point.y, trailSize * 3
+            );
+            gradient.addColorStop(0, this.color);
             gradient.addColorStop(1, 'transparent');
 
-            this.ctx.fillStyle = gradient;
-            this.ctx.beginPath();
-            this.ctx.arc(x, y, radius, 0, Math.PI * 2);
-            this.ctx.fill();
-        }
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(point.x, point.y, trailSize * 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        });
+
+        // Draw star head
+        ctx.save();
+        ctx.globalAlpha = this.opacity;
+
+        // Glow
+        const glowGradient = ctx.createRadialGradient(
+            this.x, this.y, 0,
+            this.x, this.y, this.size * 5
+        );
+        glowGradient.addColorStop(0, this.color);
+        glowGradient.addColorStop(0.5, this.color + '40');
+        glowGradient.addColorStop(1, 'transparent');
+
+        ctx.fillStyle = glowGradient;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Core
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+    isDead() {
+        return this.opacity <= 0 || this.x > this.canvas.width || this.y < 0;
     }
 }
 
-// ============================================
-// INTERACTIVE GRATITUDE TREE
-// ============================================
-class GratitudeTree {
+class WishesSystem {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
+        if (!this.canvas) return;
         this.ctx = this.canvas.getContext('2d');
-        this.gratitudeLeaves = [];
-        this.animationFrame = 0;
+        this.stars = [];
+        this.wishCount = 0;
 
         this.resize();
         window.addEventListener('resize', () => this.resize());
 
         this.canvas.addEventListener('click', (e) => this.handleClick(e));
-
-        this.draw();
     }
 
     resize() {
-        const container = this.canvas.parentElement;
-        const rect = container.getBoundingClientRect();
-        this.canvas.width = rect.width;
-        this.canvas.height = rect.height;
-        this.draw();
+        const section = this.canvas.closest('.wishes-section');
+        if (section) {
+            this.canvas.width = section.offsetWidth;
+            this.canvas.height = section.offsetHeight;
+        }
     }
 
     handleClick(e) {
@@ -414,189 +582,98 @@ class GratitudeTree {
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-        // Show input modal
-        const inputContainer = document.getElementById('gratitude-input');
-        inputContainer.style.display = 'flex';
-        inputContainer.dataset.x = x;
-        inputContainer.dataset.y = y;
-
-        document.getElementById('gratitude-text').focus();
+        // Show wish input modal
+        const inputContainer = document.getElementById('wish-input');
+        if (inputContainer) {
+            inputContainer.style.display = 'flex';
+            inputContainer.dataset.x = x;
+            inputContainer.dataset.y = y;
+            document.getElementById('wish-text').focus();
+        }
     }
 
-    addLeaf(text, x, y) {
-        const leaf = {
-            text: text,
-            x: x,
-            y: y,
-            size: 0,
-            targetSize: random(30, 50),
-            rotation: random(-0.3, 0.3),
-            color: CONFIG.tree.leafColors[randomInt(0, CONFIG.tree.leafColors.length)],
-            opacity: 0,
-            swayPhase: random(0, Math.PI * 2)
-        };
-        this.gratitudeLeaves.push(leaf);
+    addWish(text, x, y) {
+        this.stars.push(new ShootingStar(this.canvas, x, y, text));
+        this.wishCount++;
+        document.getElementById('wish-count').textContent = this.wishCount;
 
-        // Also create a floating gratitude display
-        this.createFloatingGratitude(text, x, y);
+        // Create floating wish display
+        this.createFloatingWish(text, x, y);
     }
 
-    createFloatingGratitude(text, x, y) {
-        const container = document.getElementById('gratitude-leaves');
-        const leaf = document.createElement('div');
-        leaf.className = 'gratitude-leaf';
-        leaf.textContent = text;
+    createFloatingWish(text, x, y) {
+        const container = document.getElementById('floating-wishes');
+        if (!container) return;
 
-        // Position relative to tree canvas
-        const treeRect = this.canvas.getBoundingClientRect();
-        leaf.style.left = `${treeRect.left + x}px`;
-        leaf.style.top = `${treeRect.top + y}px`;
+        const wish = document.createElement('div');
+        wish.className = 'floating-wish';
+        wish.textContent = text;
 
-        container.appendChild(leaf);
+        const rect = this.canvas.getBoundingClientRect();
+        wish.style.left = `${rect.left + x}px`;
+        wish.style.top = `${rect.top + y}px`;
 
-        // Remove after animation
-        setTimeout(() => leaf.remove(), 15000);
+        container.appendChild(wish);
+
+        setTimeout(() => wish.remove(), 10000);
+    }
+
+    update() {
+        this.stars.forEach(s => s.update());
+        this.stars = this.stars.filter(s => !s.isDead());
     }
 
     draw() {
-        const { width, height } = this.canvas;
-        this.ctx.clearRect(0, 0, width, height);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.stars.forEach(s => s.draw(this.ctx));
+    }
+}
 
-        // Draw trunk
-        const trunkX = width / 2;
-        const trunkY = height - 50;
-        const trunkHeight = height * 0.4;
+// ============================================
+// BALL DROP INTERACTION
+// ============================================
+class BallDrop {
+    constructor(fireworksSystem) {
+        this.container = document.getElementById('ball-drop');
+        if (!this.container) return;
 
-        this.drawBranch(trunkX, trunkY, trunkHeight, -Math.PI / 2, 6);
+        this.fireworksSystem = fireworksSystem;
+        this.hasDropped = false;
 
-        // Draw gratitude leaves with animation
-        for (const leaf of this.gratitudeLeaves) {
-            // Animate size and opacity
-            leaf.size = lerp(leaf.size, leaf.targetSize, 0.1);
-            leaf.opacity = lerp(leaf.opacity, 1, 0.1);
+        this.container.addEventListener('click', () => this.drop());
+    }
 
-            const sway = Math.sin(this.animationFrame * 0.02 + leaf.swayPhase) * 5;
+    drop() {
+        if (this.hasDropped) return;
+        this.hasDropped = true;
 
-            this.ctx.save();
-            this.ctx.translate(leaf.x + sway, leaf.y);
-            this.ctx.rotate(leaf.rotation);
-            this.ctx.globalAlpha = leaf.opacity;
+        this.container.classList.add('dropping');
 
-            // Draw leaf shape
-            this.ctx.beginPath();
-            this.ctx.moveTo(0, -leaf.size / 2);
-            this.ctx.bezierCurveTo(
-                leaf.size / 2, -leaf.size / 4,
-                leaf.size / 2, leaf.size / 4,
-                0, leaf.size / 2
-            );
-            this.ctx.bezierCurveTo(
-                -leaf.size / 2, leaf.size / 4,
-                -leaf.size / 2, -leaf.size / 4,
-                0, -leaf.size / 2
-            );
+        // Hide instruction
+        const instruction = this.container.querySelector('.ball-instruction');
+        if (instruction) {
+            instruction.style.opacity = '0';
+        }
 
-            this.ctx.fillStyle = leaf.color;
-            this.ctx.fill();
-
-            // Draw text on leaf
-            this.ctx.fillStyle = 'rgba(253, 245, 230, 0.9)';
-            this.ctx.font = `${Math.max(8, leaf.size / 4)}px 'Cormorant Garamond', serif`;
-            this.ctx.textAlign = 'center';
-            this.ctx.textBaseline = 'middle';
-
-            // Truncate text if too long
-            let displayText = leaf.text;
-            if (displayText.length > 12) {
-                displayText = displayText.substring(0, 10) + '...';
+        // Trigger fireworks after ball drops
+        setTimeout(() => {
+            if (this.fireworksSystem) {
+                this.fireworksSystem.startAutoLaunch();
             }
-            this.ctx.fillText(displayText, 0, 0);
 
-            this.ctx.restore();
-        }
-
-        this.animationFrame++;
-        requestAnimationFrame(() => this.draw());
+            // Show celebration message
+            this.showCelebration();
+        }, 2500);
     }
 
-    drawBranch(x, y, length, angle, thickness) {
-        if (length < 10 || thickness < 1) {
-            // Draw a leaf at branch end
-            this.drawTreeLeaf(x, y, angle);
-            return;
+    showCelebration() {
+        const instruction = this.container.querySelector('.ball-instruction');
+        if (instruction) {
+            instruction.textContent = '🎉 HAPPY NEW YEAR 2026! 🎉';
+            instruction.style.opacity = '1';
+            instruction.style.color = '#ffd700';
+            instruction.style.fontSize = '1.2rem';
         }
-
-        const endX = x + Math.cos(angle) * length;
-        const endY = y + Math.sin(angle) * length;
-
-        // Draw branch with gradient
-        this.ctx.beginPath();
-        this.ctx.moveTo(x, y);
-        this.ctx.lineTo(endX, endY);
-        this.ctx.strokeStyle = CONFIG.tree.trunkColor;
-        this.ctx.lineWidth = thickness;
-        this.ctx.lineCap = 'round';
-        this.ctx.stroke();
-
-        // Recursive branches
-        const newLength = length * CONFIG.tree.branchLength;
-        const newThickness = thickness * 0.7;
-
-        // Add some randomness to branch angles
-        const angleVariation = random(-0.1, 0.1);
-
-        this.drawBranch(
-            endX, endY,
-            newLength,
-            angle - CONFIG.tree.branchAngle + angleVariation,
-            newThickness
-        );
-
-        this.drawBranch(
-            endX, endY,
-            newLength,
-            angle + CONFIG.tree.branchAngle + angleVariation,
-            newThickness
-        );
-
-        // Sometimes add a middle branch
-        if (Math.random() > 0.6 && thickness > 2) {
-            this.drawBranch(
-                endX, endY,
-                newLength * 0.8,
-                angle + random(-0.2, 0.2),
-                newThickness * 0.8
-            );
-        }
-    }
-
-    drawTreeLeaf(x, y, angle) {
-        const leafSize = random(8, 15);
-        const color = CONFIG.tree.leafColors[randomInt(0, CONFIG.tree.leafColors.length)];
-
-        this.ctx.save();
-        this.ctx.translate(x, y);
-        this.ctx.rotate(angle + Math.PI / 2);
-
-        // Leaf shape
-        this.ctx.beginPath();
-        this.ctx.moveTo(0, -leafSize / 2);
-        this.ctx.bezierCurveTo(
-            leafSize / 2, -leafSize / 4,
-            leafSize / 2, leafSize / 4,
-            0, leafSize / 2
-        );
-        this.ctx.bezierCurveTo(
-            -leafSize / 2, leafSize / 4,
-            -leafSize / 2, -leafSize / 4,
-            0, -leafSize / 2
-        );
-
-        this.ctx.fillStyle = color;
-        this.ctx.globalAlpha = random(0.7, 1);
-        this.ctx.fill();
-
-        this.ctx.restore();
     }
 }
 
@@ -606,143 +683,192 @@ class GratitudeTree {
 class ScrollAnimations {
     constructor() {
         this.elements = document.querySelectorAll('.reveal-text, .reveal-scale');
-        this.observer = new IntersectionObserver(
-            (entries) => this.handleIntersection(entries),
-            {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            }
-        );
+
+        const options = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        this.observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, options);
 
         this.elements.forEach(el => this.observer.observe(el));
+    }
+}
 
-        // Parallax effect on scroll
-        window.addEventListener('scroll', () => this.handleParallax());
+// ============================================
+// AUDIO VISUALIZER SIMULATION
+// ============================================
+class AudioVisualizerSim {
+    constructor() {
+        this.bars = document.querySelectorAll('.viz-bar');
+        if (this.bars.length === 0) return;
+
+        this.animate();
     }
 
-    handleIntersection(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('revealed');
-                // Stagger children if present
-                const children = entry.target.querySelectorAll('[data-delay]');
-                children.forEach((child, i) => {
-                    child.style.animationDelay = `${i * 0.1}s`;
-                });
+    animate() {
+        this.bars.forEach((bar, i) => {
+            const height = 20 + Math.sin(Date.now() * 0.003 + i * 0.5) * 30 +
+                           Math.sin(Date.now() * 0.007 + i * 0.3) * 20;
+            bar.style.height = `${height}px`;
+        });
+
+        requestAnimationFrame(() => this.animate());
+    }
+}
+
+// ============================================
+// WISH INPUT HANDLER
+// ============================================
+class WishInputHandler {
+    constructor(wishesSystem) {
+        this.wishesSystem = wishesSystem;
+        this.container = document.getElementById('wish-input');
+        if (!this.container) return;
+
+        this.input = document.getElementById('wish-text');
+        this.releaseBtn = document.getElementById('release-wish-btn');
+        this.closeBtn = document.getElementById('close-wish');
+
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        this.releaseBtn.addEventListener('click', () => this.releaseWish());
+        this.closeBtn.addEventListener('click', () => this.close());
+
+        this.input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.releaseWish();
+            }
+        });
+
+        this.container.addEventListener('click', (e) => {
+            if (e.target === this.container) {
+                this.close();
             }
         });
     }
 
-    handleParallax() {
-        const scrollY = window.scrollY;
-        const layers = document.querySelectorAll('.parallax-layer');
+    releaseWish() {
+        const text = this.input.value.trim();
+        if (!text) return;
 
-        layers.forEach((layer, i) => {
-            const speed = (i + 1) * 0.1;
-            layer.style.transform = `translateY(${scrollY * speed}px)`;
-        });
+        const x = parseFloat(this.container.dataset.x);
+        const y = parseFloat(this.container.dataset.y);
+
+        if (this.wishesSystem) {
+            this.wishesSystem.addWish(text, x, y);
+        }
+
+        this.input.value = '';
+        this.close();
+    }
+
+    close() {
+        this.container.style.display = 'none';
     }
 }
 
 // ============================================
-// FEAST ITEM INTERACTIONS
+// PARALLAX EFFECT
 // ============================================
-class FeastInteractions {
+class ParallaxEffect {
     constructor() {
-        this.items = document.querySelectorAll('.feast-item');
-        this.init();
+        this.elements = {
+            skyline: document.querySelector('.nyc-skyline'),
+            palms: document.querySelector('.tropical-elements'),
+            gradientMesh: document.querySelector('.gradient-mesh')
+        };
+
+        window.addEventListener('scroll', () => this.update());
+        window.addEventListener('mousemove', (e) => this.handleMouse(e));
     }
 
-    init() {
-        this.items.forEach(item => {
-            item.addEventListener('mouseenter', () => this.handleHover(item));
-            item.addEventListener('mouseleave', () => this.handleLeave(item));
-        });
-    }
+    update() {
+        const scrollY = window.scrollY;
 
-    handleHover(item) {
-        // Add ripple effect
-        const glow = item.querySelector('.feast-glow');
-        if (glow) {
-            glow.style.opacity = '0.5';
+        if (this.elements.skyline) {
+            this.elements.skyline.style.transform = `translateY(${scrollY * 0.3}px)`;
+        }
+
+        if (this.elements.palms) {
+            this.elements.palms.style.transform = `translateY(${scrollY * 0.2}px)`;
         }
     }
 
-    handleLeave(item) {
-        const glow = item.querySelector('.feast-glow');
-        if (glow) {
-            glow.style.opacity = '0';
+    handleMouse(e) {
+        const mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        const mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+
+        if (this.elements.gradientMesh) {
+            this.elements.gradientMesh.style.transform =
+                `translate(${mouseX * 20}px, ${mouseY * 20}px)`;
         }
     }
 }
 
 // ============================================
-// MAIN ANIMATION LOOP
+// MAIN APPLICATION
 // ============================================
 class App {
     constructor() {
         this.init();
     }
 
-    async init() {
-        // Initialize systems
-        this.timeTheme = new TimeTheme();
-        this.background = new GenerativeBackground('bg-canvas');
-        this.leafSystem = new LeafSystem('leaf-canvas');
-        this.emberSystem = new EmberSystem('ember-canvas');
-        this.tree = new GratitudeTree('tree-canvas');
-        this.scrollAnimations = new ScrollAnimations();
-        this.feastInteractions = new FeastInteractions();
+    init() {
+        // Initialize all systems
+        this.starfield = new StarfieldSystem('stars-canvas');
+        this.fireworks = new FireworksSystem('fireworks-canvas');
+        this.particles = new AmbientParticleSystem('particles-canvas');
+        this.wishes = new WishesSystem('wishes-canvas');
 
-        // Setup gratitude input handlers
-        this.setupGratitudeInput();
+        // Initialize interactions
+        this.ballDrop = new BallDrop(this.fireworks);
+        this.scrollAnimations = new ScrollAnimations();
+        this.audioViz = new AudioVisualizerSim();
+        this.wishInput = new WishInputHandler(this.wishes);
+        this.parallax = new ParallaxEffect();
+
+        // Launch initial fireworks for effect
+        setTimeout(() => {
+            if (this.fireworks) {
+                this.fireworks.launchRandom();
+                setTimeout(() => this.fireworks.launchRandom(), 500);
+            }
+        }, 2000);
 
         // Start animation loop
         this.animate();
     }
 
-    setupGratitudeInput() {
-        const inputContainer = document.getElementById('gratitude-input');
-        const input = document.getElementById('gratitude-text');
-        const addBtn = document.getElementById('add-leaf-btn');
-        const cancelBtn = document.getElementById('cancel-btn');
-
-        addBtn.addEventListener('click', () => {
-            const text = input.value.trim();
-            if (text) {
-                const x = parseFloat(inputContainer.dataset.x);
-                const y = parseFloat(inputContainer.dataset.y);
-                this.tree.addLeaf(text, x, y);
-                input.value = '';
-                inputContainer.style.display = 'none';
-            }
-        });
-
-        cancelBtn.addEventListener('click', () => {
-            input.value = '';
-            inputContainer.style.display = 'none';
-        });
-
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                addBtn.click();
-            }
-        });
-
-        // Close on clicking outside
-        inputContainer.addEventListener('click', (e) => {
-            if (e.target === inputContainer) {
-                cancelBtn.click();
-            }
-        });
-    }
-
     animate() {
-        this.leafSystem.update();
-        this.leafSystem.draw();
+        // Update all systems
+        if (this.starfield) {
+            this.starfield.update();
+            this.starfield.draw();
+        }
 
-        this.emberSystem.update();
-        this.emberSystem.draw();
+        if (this.fireworks) {
+            this.fireworks.update();
+            this.fireworks.draw();
+        }
+
+        if (this.particles) {
+            this.particles.update();
+            this.particles.draw();
+        }
+
+        if (this.wishes) {
+            this.wishes.update();
+            this.wishes.draw();
+        }
 
         requestAnimationFrame(() => this.animate());
     }
@@ -758,21 +884,65 @@ document.addEventListener('DOMContentLoaded', () => {
 // ============================================
 // PERFORMANCE OPTIMIZATION
 // ============================================
-// Reduce animations when page is not visible
 document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-        // Pause heavy animations
-        CONFIG.leaves.count = 10;
-        CONFIG.embers.count = 5;
+        CONFIG.stars.count = 50;
+        CONFIG.particles.count = 10;
     } else {
-        // Resume normal animations
-        CONFIG.leaves.count = 50;
-        CONFIG.embers.count = 30;
+        CONFIG.stars.count = 200;
+        CONFIG.particles.count = 25;
     }
 });
 
 // Respect reduced motion preference
 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    CONFIG.leaves.count = 5;
-    CONFIG.embers.count = 3;
+    CONFIG.stars.count = 30;
+    CONFIG.particles.count = 5;
+    CONFIG.fireworks.particleCount = 30;
 }
+
+// ============================================
+// EASTER EGG: Konami Code for extra fireworks
+// ============================================
+const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+                    'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+                    'KeyB', 'KeyA'];
+let konamiIndex = 0;
+
+document.addEventListener('keydown', (e) => {
+    if (e.code === konamiCode[konamiIndex]) {
+        konamiIndex++;
+        if (konamiIndex === konamiCode.length) {
+            // Trigger mega fireworks show
+            const fireworksCanvas = document.getElementById('fireworks-canvas');
+            if (fireworksCanvas) {
+                const system = new FireworksSystem('fireworks-canvas');
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(() => system.launchRandom(), i * 200);
+                }
+            }
+            konamiIndex = 0;
+        }
+    } else {
+        konamiIndex = 0;
+    }
+});
+
+// ============================================
+// Console greeting for developers
+// ============================================
+console.log(`
+%c🌴 Happy New Year 2026! 🗽
+%cFrom Grenada with tropical vibes to NYC with urban energy.
+
+Built with love using vanilla HTML, CSS & JavaScript.
+No frameworks, just pure web magic.
+
+👋 Hello, fellow developer! Thanks for checking out the code.
+
+%c— Claude
+`,
+'font-size: 20px; font-weight: bold; color: #00d4aa;',
+'font-size: 14px; color: #8338ec;',
+'font-size: 12px; font-style: italic; color: #ff6b9d;'
+);

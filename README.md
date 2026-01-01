@@ -1,19 +1,55 @@
-# Harvest of Gratitude - Interactive Thanksgiving Experience
+# Happy New Year 2026
 
-An immersive, state-of-the-art Thanksgiving celebration page featuring physics-based animations, interactive elements, and dynamic theming.
+## Grenada Vibes × NYC Energy
+
+An immersive, interactive New Year celebration that blends the tropical warmth of Grenada with the electric urban pulse of New York City.
+
+---
 
 ## Features
 
-- **Physics-Based Leaf System**: Realistic falling autumn leaves with wind simulation, turbulence, and depth-based parallax
-- **Interactive Gratitude Tree**: Click to add leaves of gratitude that animate onto a procedurally-generated tree
-- **Ambient Ember Particles**: Warm, glowing particles that rise and flicker for a cozy atmosphere
-- **Dynamic Time-Based Theming**: Colors shift automatically based on time of day (dawn, day, sunset, night)
-- **3D Parallax Depth Layers**: Multiple background layers create immersive depth on scroll
-- **Feast Section**: Interactive food icons with hover animations and glow effects
-- **Scroll-Triggered Reveals**: Smooth animations as content comes into view
-- **Generative Background**: Unique noise-textured background generated on each visit
-- **Accessibility**: Supports reduced motion preferences and keyboard navigation
-- **Responsive Design**: Works beautifully on desktop, tablet, and mobile
+### Visual Effects
+- **Twinkling Starfield** - Dynamic night sky with multi-colored stars
+- **Physics-Based Fireworks** - Realistic particle explosions with trails and gravity
+- **Tropical Particles** - Floating hibiscus flowers, sparkles, and confetti
+- **NYC Skyline** - Iconic buildings with neon glow effects
+- **CSS Palm Trees** - Swaying tropical palm trees with animated fronds
+- **Gradient Mesh Background** - Animated color mesh with mouse parallax
+
+### Interactive Elements
+- **Ball Drop** - Click the Times Square ball to trigger a celebration
+- **Wish System** - Click to release wishes as shooting stars into the night sky
+- **Parallax Effects** - Scroll and mouse movement create depth
+- **Audio Visualizer** - Simulated audio bars that pulse with energy
+
+### Technical Highlights
+- **Pure Vanilla JS** - No frameworks, no dependencies
+- **Canvas Particle Systems** - Multiple layered canvas animations
+- **CSS Art** - Palm trees and decorative elements built with pure CSS
+- **Responsive Design** - Adapts beautifully to all screen sizes
+- **Accessibility** - Respects reduced motion preferences, proper ARIA labels
+- **Performance Optimized** - Reduces animations when tab is hidden
+
+---
+
+## Easter Egg
+
+Try entering the Konami Code for a surprise!
+`↑ ↑ ↓ ↓ ← → ← → B A`
+
+---
+
+## The Story
+
+This page celebrates the intersection of two worlds:
+
+**Grenada** - The Spice Island, where warm Caribbean breezes carry the scent of nutmeg, crystal waters reflect endless sunsets, and island time means every moment is precious.
+
+**New York City** - The city that never sleeps, where neon lights illuminate midnight streets, subway rhythms pulse underground, and dreams reach as high as the skyline.
+
+Together, they represent the best of both worlds: tropical peace and urban ambition.
+
+---
 
 ## Tech Stack
 
@@ -29,3 +65,13 @@ An immersive, state-of-the-art Thanksgiving celebration page featuring physics-b
 2. Navigate to "Pages" in the sidebar
 3. Under "Source", select your branch and save
 4. Your site will be live at `https://[username].github.io/Holiday/`
+
+---
+
+## Credits
+
+Created with love by Claude.
+
+Happy New Year 2026!
+
+🌴 ✨ 🗽

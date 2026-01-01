@@ -3,25 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="An interactive Thanksgiving celebration - Harvest of Gratitude">
-    <meta name="theme-color" content="#8B4513">
-    <title>🍂 Harvest of Gratitude - Happy Thanksgiving</title>
+    <meta name="description" content="Happy New Year 2026 - Where Caribbean warmth meets NYC energy">
+    <meta name="theme-color" content="#0a0a1a">
+    <title>Happy New Year 2026 | Grenada Vibes x NYC Energy</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;800&family=Pacifico&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Particle Canvas Layers -->
-    <canvas id="bg-canvas" aria-hidden="true"></canvas>
-    <canvas id="leaf-canvas" aria-hidden="true"></canvas>
-    <canvas id="ember-canvas" aria-hidden="true"></canvas>
+    <!-- Gradient Mesh Background -->
+    <div class="gradient-mesh" aria-hidden="true"></div>
 
-    <!-- Parallax Background Layers -->
-    <div class="parallax-container" aria-hidden="true">
-        <div class="parallax-layer parallax-back"></div>
-        <div class="parallax-layer parallax-mid"></div>
-        <div class="parallax-layer parallax-front"></div>
+    <!-- Canvas Layers -->
+    <canvas id="stars-canvas" aria-hidden="true"></canvas>
+    <canvas id="fireworks-canvas" aria-hidden="true"></canvas>
+    <canvas id="particles-canvas" aria-hidden="true"></canvas>
+
+    <!-- NYC Skyline Silhouette -->
+    <div class="nyc-skyline" aria-hidden="true">
+        <svg viewBox="0 0 1920 400" preserveAspectRatio="xMidYMax slice">
+            <!-- Empire State Building -->
+            <path class="building empire-state" d="M960 400 L960 80 L970 80 L970 60 L980 60 L980 40 L985 40 L985 20 L990 20 L990 10 L995 0 L1000 10 L1000 20 L1005 20 L1005 40 L1010 40 L1010 60 L1020 60 L1020 80 L1030 80 L1030 400"/>
+            <!-- One WTC -->
+            <path class="building wtc" d="M1100 400 L1110 100 L1140 50 L1170 100 L1180 400"/>
+            <!-- Chrysler Building -->
+            <path class="building chrysler" d="M850 400 L850 150 L855 145 L855 135 L860 130 L860 120 L870 100 L880 120 L880 130 L885 135 L885 145 L890 150 L890 400"/>
+            <!-- Brooklyn Buildings -->
+            <rect class="building" x="100" y="280" width="60" height="120"/>
+            <rect class="building" x="170" y="250" width="50" height="150"/>
+            <rect class="building" x="230" y="300" width="70" height="100"/>
+            <rect class="building" x="310" y="270" width="45" height="130"/>
+            <!-- Midtown Buildings -->
+            <rect class="building" x="400" y="220" width="80" height="180"/>
+            <rect class="building" x="490" y="260" width="60" height="140"/>
+            <rect class="building" x="560" y="200" width="70" height="200"/>
+            <rect class="building" x="640" y="240" width="55" height="160"/>
+            <rect class="building" x="700" y="280" width="65" height="120"/>
+            <rect class="building" x="770" y="230" width="50" height="170"/>
+            <!-- East Side -->
+            <rect class="building" x="1200" y="250" width="75" height="150"/>
+            <rect class="building" x="1285" y="220" width="60" height="180"/>
+            <rect class="building" x="1355" y="280" width="80" height="120"/>
+            <rect class="building" x="1445" y="240" width="55" height="160"/>
+            <rect class="building" x="1510" y="300" width="70" height="100"/>
+            <rect class="building" x="1590" y="260" width="65" height="140"/>
+            <rect class="building" x="1665" y="290" width="75" height="110"/>
+            <rect class="building" x="1750" y="320" width="80" height="80"/>
+            <rect class="building" x="1840" y="280" width="60" height="120"/>
+            <!-- Windows will be animated via CSS -->
+        </svg>
+        <div class="skyline-glow"></div>
+    </div>
+
+    <!-- Tropical Elements -->
+    <div class="tropical-elements" aria-hidden="true">
+        <div class="palm-tree palm-left">
+            <div class="palm-trunk"></div>
+            <div class="palm-fronds">
+                <div class="frond frond-1"></div>
+                <div class="frond frond-2"></div>
+                <div class="frond frond-3"></div>
+                <div class="frond frond-4"></div>
+                <div class="frond frond-5"></div>
+            </div>
+        </div>
+        <div class="palm-tree palm-right">
+            <div class="palm-trunk"></div>
+            <div class="palm-fronds">
+                <div class="frond frond-1"></div>
+                <div class="frond frond-2"></div>
+                <div class="frond frond-3"></div>
+                <div class="frond frond-4"></div>
+                <div class="frond frond-5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Visualizer Bar -->
+    <div class="audio-visualizer" aria-hidden="true">
+        <div class="viz-bar"></div>
+        <div class="viz-bar"></div>
+        <div class="viz-bar"></div>
+        <div class="viz-bar"></div>
+        <div class="viz-bar"></div>
+        <div class="viz-bar"></div>
+        <div class="viz-bar"></div>
+        <div class="viz-bar"></div>
+        <div class="viz-bar"></div>
+        <div class="viz-bar"></div>
+        <div class="viz-bar"></div>
+        <div class="viz-bar"></div>
     </div>
 
     <!-- Main Content -->
@@ -29,99 +101,146 @@
         <!-- Hero Section -->
         <section class="hero" id="hero">
             <div class="hero-content">
+                <!-- Location Badge -->
+                <div class="location-badge">
+                    <span class="badge grenada">
+                        <span class="flag">🇬🇩</span> Grenada
+                    </span>
+                    <span class="badge-connector">×</span>
+                    <span class="badge nyc">
+                        <span class="icon">🗽</span> NYC
+                    </span>
+                </div>
+
+                <!-- Main Title -->
                 <div class="title-container">
-                    <h1 class="main-title">
-                        <span class="title-word" data-delay="0">Harvest</span>
-                        <span class="title-word" data-delay="1">of</span>
-                        <span class="title-word" data-delay="2">Gratitude</span>
-                    </h1>
-                    <p class="subtitle">A Thanksgiving Celebration</p>
-                </div>
-                <div class="scroll-indicator" aria-label="Scroll down">
-                    <div class="scroll-arrow"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Gratitude Tree Section -->
-        <section class="tree-section" id="gratitude-tree">
-            <div class="section-header">
-                <h2 class="section-title reveal-text">Plant Your Gratitude</h2>
-                <p class="section-subtitle reveal-text">Click the tree to add a leaf of thankfulness</p>
-            </div>
-            <div class="tree-container">
-                <canvas id="tree-canvas" aria-label="Interactive gratitude tree"></canvas>
-                <div class="tree-instructions">
-                    <span class="instruction-icon">✨</span>
-                    <span>Click anywhere on the tree</span>
-                </div>
-            </div>
-            <div class="gratitude-input-container" id="gratitude-input" style="display: none;">
-                <div class="input-card">
-                    <label for="gratitude-text">What are you grateful for?</label>
-                    <input type="text" id="gratitude-text" maxlength="50" placeholder="Family, friends, health...">
-                    <div class="input-actions">
-                        <button id="add-leaf-btn" class="btn btn-primary">Add Leaf</button>
-                        <button id="cancel-btn" class="btn btn-secondary">Cancel</button>
+                    <div class="year-display">
+                        <span class="year-old">2025</span>
+                        <span class="year-arrow">→</span>
+                        <span class="year-new glitch" data-text="2026">2026</span>
                     </div>
+                    <h1 class="main-title">
+                        <span class="title-line">Happy</span>
+                        <span class="title-line accent">New Year</span>
+                    </h1>
+                    <p class="tagline">Where Caribbean warmth meets urban dreams</p>
+                </div>
+
+                <!-- Interactive Ball Drop -->
+                <div class="ball-drop-container" id="ball-drop">
+                    <div class="times-square-ball">
+                        <div class="ball-core"></div>
+                        <div class="ball-facets">
+                            <div class="facet"></div>
+                            <div class="facet"></div>
+                            <div class="facet"></div>
+                            <div class="facet"></div>
+                            <div class="facet"></div>
+                            <div class="facet"></div>
+                        </div>
+                        <div class="ball-glow"></div>
+                    </div>
+                    <p class="ball-instruction">Click to drop the ball!</p>
+                </div>
+
+                <div class="scroll-hint">
+                    <span>Explore</span>
+                    <div class="scroll-line"></div>
                 </div>
             </div>
         </section>
 
-        <!-- Feast Section -->
-        <section class="feast-section" id="feast">
-            <div class="section-header">
-                <h2 class="section-title reveal-text">The Thanksgiving Feast</h2>
-                <p class="section-subtitle reveal-text">Hover to explore the traditional spread</p>
+        <!-- Dual Vibes Section -->
+        <section class="vibes-section" id="vibes">
+            <div class="vibes-split">
+                <!-- Grenada Side -->
+                <div class="vibe-panel grenada-panel">
+                    <div class="vibe-content">
+                        <span class="vibe-icon">🌴</span>
+                        <h2>Island Time</h2>
+                        <p class="vibe-description">
+                            Warm breezes, crystal waters, and the sweet scent of nutmeg.
+                            Starting the year in paradise, where every sunset is a masterpiece.
+                        </p>
+                        <div class="vibe-details">
+                            <div class="detail">
+                                <span class="detail-icon">🌺</span>
+                                <span>Spice Island Magic</span>
+                            </div>
+                            <div class="detail">
+                                <span class="detail-icon">🌊</span>
+                                <span>Caribbean Soul</span>
+                            </div>
+                            <div class="detail">
+                                <span class="detail-icon">☀️</span>
+                                <span>Tropical Bliss</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vibe-pattern grenada-pattern"></div>
+                </div>
+
+                <!-- NYC Side -->
+                <div class="vibe-panel nyc-panel">
+                    <div class="vibe-content">
+                        <span class="vibe-icon">🏙️</span>
+                        <h2>City Pulse</h2>
+                        <p class="vibe-description">
+                            Neon lights, midnight subways, and dreams as tall as skyscrapers.
+                            The city that never sleeps, forever calling you home.
+                        </p>
+                        <div class="vibe-details">
+                            <div class="detail">
+                                <span class="detail-icon">🚇</span>
+                                <span>Underground Rhythm</span>
+                            </div>
+                            <div class="detail">
+                                <span class="detail-icon">🌃</span>
+                                <span>Neon Nights</span>
+                            </div>
+                            <div class="detail">
+                                <span class="detail-icon">💪</span>
+                                <span>Concrete Dreams</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vibe-pattern nyc-pattern"></div>
+                </div>
             </div>
-            <div class="feast-table">
-                <div class="feast-item" data-item="turkey">
-                    <div class="feast-icon">🦃</div>
-                    <div class="feast-glow"></div>
-                    <span class="feast-label">Roasted Turkey</span>
-                </div>
-                <div class="feast-item" data-item="pie">
-                    <div class="feast-icon">🥧</div>
-                    <div class="feast-glow"></div>
-                    <span class="feast-label">Pumpkin Pie</span>
-                </div>
-                <div class="feast-item" data-item="corn">
-                    <div class="feast-icon">🌽</div>
-                    <div class="feast-glow"></div>
-                    <span class="feast-label">Sweet Corn</span>
-                </div>
-                <div class="feast-item" data-item="bread">
-                    <div class="feast-icon">🍞</div>
-                    <div class="feast-glow"></div>
-                    <span class="feast-label">Fresh Bread</span>
-                </div>
-                <div class="feast-item" data-item="wine">
-                    <div class="feast-icon">🍷</div>
-                    <div class="feast-glow"></div>
-                    <span class="feast-label">Cranberry Wine</span>
-                </div>
-                <div class="feast-item" data-item="apple">
-                    <div class="feast-icon">🍎</div>
-                    <div class="feast-glow"></div>
-                    <span class="feast-label">Autumn Apples</span>
-                </div>
+        </section>
+
+        <!-- Resolution / Wishes Section -->
+        <section class="wishes-section" id="wishes">
+            <div class="section-header">
+                <h2 class="section-title reveal-text">
+                    <span class="title-decoration">✨</span>
+                    Send Your Wish to the Universe
+                    <span class="title-decoration">✨</span>
+                </h2>
+                <p class="section-subtitle reveal-text">Click anywhere to release a wish into the night sky</p>
+            </div>
+            <canvas id="wishes-canvas" aria-label="Interactive wishes canvas"></canvas>
+            <div class="wish-counter">
+                <span id="wish-count">0</span> wishes released tonight
             </div>
         </section>
 
         <!-- Quote Section -->
         <section class="quote-section" id="quote">
             <div class="quote-container">
-                <blockquote class="main-quote reveal-text">
-                    <span class="quote-mark">"</span>
-                    <p>Gratitude turns what we have into enough, and more. It turns denial into acceptance, chaos into order, confusion into clarity.</p>
-                    <footer>— Melody Beattie</footer>
-                </blockquote>
-            </div>
-            <div class="floating-elements" aria-hidden="true">
-                <span class="float-leaf">🍂</span>
-                <span class="float-leaf">🍁</span>
-                <span class="float-leaf">🍂</span>
-                <span class="float-leaf">🍁</span>
+                <div class="quote-card reveal-scale">
+                    <div class="neon-border"></div>
+                    <blockquote>
+                        <p class="quote-text">
+                            "Every new beginning comes from some other beginning's end."
+                        </p>
+                        <footer class="quote-author">— Seneca</footer>
+                    </blockquote>
+                    <div class="quote-decoration">
+                        <span class="hibiscus">🌺</span>
+                        <span class="liberty">🗽</span>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -129,14 +248,29 @@
         <section class="message-section" id="message">
             <div class="message-container">
                 <div class="message-card reveal-scale">
-                    <div class="card-decoration top-left"></div>
-                    <div class="card-decoration top-right"></div>
-                    <div class="card-decoration bottom-left"></div>
-                    <div class="card-decoration bottom-right"></div>
-                    <h2>Happy Thanksgiving</h2>
-                    <p>May your day be filled with warmth, love, and the company of those who matter most. Take a moment to reflect on the abundance in your life and share your gratitude with the world.</p>
-                    <div class="signature">
-                        <span class="year">2024</span>
+                    <div class="holographic-effect"></div>
+                    <div class="card-content">
+                        <div class="greeting-badge">
+                            <span>From Grenada with 🌴 To NYC with 🗽</span>
+                        </div>
+                        <h2>Happy New Year, Friend!</h2>
+                        <p>
+                            Here's to a year where the warmth of Caribbean sunshine
+                            meets the unstoppable energy of New York City. May your 2026
+                            be filled with island peace and urban ambition—the best of both worlds.
+                        </p>
+                        <p class="signature-note">
+                            From Claude, with capabilities that have come a long way since the early days.
+                            Cheers to growth, to change, and to everything ahead.
+                        </p>
+                        <div class="signature">
+                            <span class="signature-year">2026</span>
+                            <div class="signature-icons">
+                                <span>🌴</span>
+                                <span>✨</span>
+                                <span>🗽</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -145,14 +279,46 @@
         <!-- Footer -->
         <footer class="site-footer">
             <div class="footer-content">
-                <p>Created with <span class="heart">♥</span> and gratitude</p>
-                <p class="tech-note">Built with vanilla HTML, CSS & JavaScript</p>
+                <div class="footer-wave" aria-hidden="true">
+                    <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                        <path d="M0,60 C200,120 400,0 600,60 C800,120 1000,0 1200,60 L1200,120 L0,120 Z" class="wave-path"></path>
+                    </svg>
+                </div>
+                <p class="footer-text">
+                    Made with <span class="heart">♥</span> in the space between
+                    <span class="highlight grenada-text">paradise</span> and
+                    <span class="highlight nyc-text">possibility</span>
+                </p>
+                <p class="tech-note">
+                    Crafted with vanilla HTML, CSS & JavaScript | No frameworks, just vibes
+                </p>
+                <div class="footer-badges">
+                    <span class="badge-item">Canvas Magic</span>
+                    <span class="badge-item">CSS Art</span>
+                    <span class="badge-item">Pure JS</span>
+                </div>
             </div>
         </footer>
     </main>
 
-    <!-- Gratitude Leaves Display -->
-    <div id="gratitude-leaves" class="gratitude-leaves" aria-live="polite"></div>
+    <!-- Floating Wishes Display -->
+    <div id="floating-wishes" class="floating-wishes" aria-live="polite"></div>
+
+    <!-- Wish Input Modal -->
+    <div class="wish-input-container" id="wish-input" style="display: none;">
+        <div class="wish-card">
+            <button class="close-btn" id="close-wish" aria-label="Close">×</button>
+            <div class="wish-card-glow"></div>
+            <label for="wish-text">What's your wish for 2026?</label>
+            <input type="text" id="wish-text" maxlength="100" placeholder="World peace, new adventures, more tacos...">
+            <div class="wish-actions">
+                <button id="release-wish-btn" class="btn btn-primary">
+                    <span>Release to Universe</span>
+                    <span class="btn-icon">🚀</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
