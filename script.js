@@ -563,7 +563,10 @@ class WishesSystem {
         this.stars = [];
         this.wishCount = 0;
 
-        this.resize();
+        // Delay initial resize to ensure layout is complete
+        requestAnimationFrame(() => {
+            this.resize();
+        });
         window.addEventListener('resize', () => this.resize());
 
         this.canvas.addEventListener('click', (e) => this.handleClick(e));
@@ -572,8 +575,15 @@ class WishesSystem {
     resize() {
         const section = this.canvas.closest('.wishes-section');
         if (section) {
-            this.canvas.width = section.offsetWidth;
-            this.canvas.height = section.offsetHeight;
+            // Use clientWidth/Height for more accurate sizing
+            const width = section.clientWidth || window.innerWidth;
+            const height = section.clientHeight || window.innerHeight;
+            this.canvas.width = width;
+            this.canvas.height = height;
+        } else {
+            // Fallback to window size
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
         }
     }
 
@@ -682,6 +692,9 @@ class BallDrop {
 // ============================================
 class ScrollAnimations {
     constructor() {
+        // Add js-loaded class to enable JS-dependent animations
+        document.documentElement.classList.add('js-loaded');
+
         this.elements = document.querySelectorAll('.reveal-text, .reveal-scale');
 
         const options = {
@@ -698,6 +711,19 @@ class ScrollAnimations {
         }, options);
 
         this.elements.forEach(el => this.observer.observe(el));
+
+        // Immediately reveal elements that are already in view
+        this.checkInitialVisibility();
+    }
+
+    checkInitialVisibility() {
+        this.elements.forEach(el => {
+            const rect = el.getBoundingClientRect();
+            const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+            if (isVisible) {
+                el.classList.add('revealed');
+            }
+        });
     }
 }
 
